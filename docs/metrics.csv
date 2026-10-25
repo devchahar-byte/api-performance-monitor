@@ -1,0 +1,7 @@
+id,endpoint_id,endpoint_name,status_code,response_time_ms,ttfb_ms,is_success,error_type,checked_at
+6,5,Integration Test API,200,1094.45,1094.3,True,,2026-10-25T07:18:34.074708
+5,4,HTTPBin Delay Simulation (Slow),200,2167.58,2083.11,True,,2026-10-25T07:18:32.975462
+4,3,HTTPBin Status 200 Check,200,1087.13,1086.98,True,,2026-10-25T07:18:30.802078
+3,2,JSONPlaceholder Users API,200,134.41,134.17,True,,2026-10-25T07:18:29.708891
+2,1,JSONPlaceholder Posts API,200,268.08,267.32,True,,2026-10-25T07:18:29.566538
+1,5,Integration Test API,200,1247.92,1247.62,True,,2026-10-25T07:18:19.522439

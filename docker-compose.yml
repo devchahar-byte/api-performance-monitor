@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api_monitor:
+    build: .
+    container_name: api-monitor-app
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - CHECK_INTERVAL_SECONDS=60
+      - MONITOR_DB_PATH=/app/data/monitor.db
+    volumes:
+      - ./data:/app/data
+      - ./docs:/app/docs
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: api-monitor-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: api-monitor-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - prometheus
+    restart: unless-stopped

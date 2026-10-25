@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Performance Monitor - Live Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl">⚡</span>
+        <div>
+          <h1 class="font-bold text-lg text-white leading-tight">API Performance Monitor</h1>
+          <p class="text-xs text-slate-400">Response Times • Error Rates • SLA Uptime • Insights</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+          Live Metrics
+        </span>
+        <a href="https://github.com/devchahar-byte/api-performance-monitor" target="_blank" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition border border-slate-700">
+          GitHub Repo
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Top Action & Info Banner -->
+    <div class="bg-gradient-to-r from-emerald-600/20 via-slate-800/40 to-slate-800/20 border border-emerald-500/20 rounded-2xl p-6 sm:p-8 backdrop-blur">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white sm:text-3xl">API Performance & Health Stream</h2>
+          <p class="mt-1 text-sm text-slate-400 max-w-2xl">
+            Continuous periodic probing tracking response latency, TTFB, error spikes, and automated performance recommendations.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="reloadMetrics()" class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 transition">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Refresh
+          </button>
+          <a href="metrics.csv" download="api_metrics.csv" class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Export CSV
+          </a>
+          <a href="data.json" download="api_performance.json" class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+            Export JSON
+          </a>
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Overall SLA Uptime</p>
+          <p id="kpiUptime" class="text-2xl font-bold text-emerald-400 mt-1">--%</p>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Avg Latency</p>
+          <p id="kpiAvgLatency" class="text-2xl font-bold text-white mt-1">-- ms</p>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Monitored Endpoints</p>
+          <p id="kpiTotalEndpoints" class="text-2xl font-bold text-white mt-1">--</p>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Checks</p>
+          <p id="kpiTotalChecks" class="text-2xl font-bold text-brand-400 mt-1">--</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-bold text-white text-base">API Response Latency &amp; p95 Comparison</h3>
+          <p class="text-xs text-slate-400">Average response times vs 95th-percentile tail latency</p>
+        </div>
+        <span class="text-xs text-slate-500 font-mono" id="chartLastUpdated">Updated: Just now</span>
+      </div>
+      <div class="h-64 sm:h-72 w-full">
+        <canvas id="latencyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Monitored Endpoints Grid -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-white text-lg flex items-center">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 mr-2.5"></span>
+          Monitored API Endpoints
+        </h3>
+        <span class="text-xs text-slate-400" id="endpointsCountBadge">4 Endpoints Active</span>
+      </div>
+      
+      <div id="endpointsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- Automated Performance Insights & Recommendations Feed -->
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base flex items-center">
+          <span class="text-lg mr-2">💡</span>
+          Automated Performance Insights &amp; Recommendations
+        </h3>
+        <span class="text-xs text-slate-400 font-medium">Real-time Rule Engine</span>
+      </div>
+
+      <div id="insightsContainer" class="space-y-3"></div>
+    </div>
+
+    <!-- Recent Probes Table -->
+    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+      <h3 class="font-bold text-white text-base">Recent Execution Audit Log</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-slate-800 uppercase tracking-wider text-slate-400 bg-slate-900/50">
+              <th class="py-2.5 px-3">Status</th>
+              <th class="py-2.5 px-3">HTTP</th>
+              <th class="py-2.5 px-3">Latency</th>
+              <th class="py-2.5 px-3">TTFB</th>
+              <th class="py-2.5 px-3">Endpoint</th>
+              <th class="py-2.5 px-3">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="auditTableBody" class="divide-y divide-slate-800/40 text-slate-300"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800 mt-12 py-6 text-center text-xs text-slate-500">
+    API Performance Monitor • Python, Flask, Requests, Grafana &amp; SQLite
+  </footer>
+
+  <script>
+    let latencyChartInstance = null;
+
+    async function loadData() {
+      try {
+        const res = await fetch('data.json?v=' + Date.now());
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        renderDashboard(data);
+      } catch (e) {
+        console.warn("Falling back to local simulation data:", e);
+        renderDashboard(getFallbackData());
+      }
+    }
+
+    function renderDashboard(data) {
+      // 1. KPI Metrics
+      const sum = data.summary || {};
+      document.getElementById('kpiUptime').textContent = (sum.overall_uptime_pct ?? 100.0) + '%';
+      document.getElementById('kpiAvgLatency').textContent = (sum.overall_avg_latency_ms ?? 0) + ' ms';
+      document.getElementById('kpiTotalEndpoints').textContent = (sum.total_endpoints ?? data.endpoints?.length ?? 0);
+      document.getElementById('kpiTotalChecks').textContent = (sum.total_checks_recorded ?? data.recent_checks?.length ?? 0);
+      document.getElementById('chartLastUpdated').textContent = 'Sync: ' + new Date().toLocaleTimeString();
+
+      // 2. Chart Rendering
+      renderLatencyChart(data.endpoints || []);
+
+      // 3. Monitored Endpoints Grid
+      renderEndpoints(data.endpoints || []);
+
+      // 4. Insights Feed
+      renderInsights(data.insights || []);
+
+      // 5. Audit Log Table
+      renderAuditLog(data.recent_checks || []);
+    }
+
+    function renderLatencyChart(endpoints) {
+      const ctx = document.getElementById('latencyChart').getContext('2d');
+      const labels = endpoints.map(e => e.name);
+      const avgLatencies = endpoints.map(e => e.avg_response_ms || 0);
+      const p95Latencies = endpoints.map(e => e.p95 || 0);
+
+      if (latencyChartInstance) {
+        latencyChartInstance.destroy();
+      }
+
+      latencyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Avg Latency (ms)',
+              data: avgLatencies,
+              backgroundColor: 'rgba(16, 185, 129, 0.7)',
+              borderColor: 'rgba(16, 185, 129, 1)',
+              borderWidth: 1,
+              borderRadius: 6,
+            },
+            {
+              label: 'p95 Latency (ms)',
+              data: p95Latencies,
+              backgroundColor: 'rgba(99, 102, 241, 0.7)',
+              borderColor: 'rgba(99, 102, 241, 1)',
+              borderWidth: 1,
+              borderRadius: 6,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      });
+    }
+
+    function renderEndpoints(endpoints) {
+      const container = document.getElementById('endpointsContainer');
+      document.getElementById('endpointsCountBadge').textContent = `${endpoints.length} Endpoints Active`;
+
+      container.innerHTML = endpoints.map(ep => {
+        const isUp = ep.latest_status === 'UP';
+        const statusBadgeClass = isUp 
+          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+          : 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+
+        return `
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h4 class="font-bold text-white text-sm leading-tight">${escapeHtml(ep.name)}</h4>
+                <a href="${ep.url}" target="_blank" class="text-xs text-emerald-400 hover:underline truncate block max-w-xs mt-0.5">${escapeHtml(ep.url)}</a>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${statusBadgeClass}">${ep.latest_status || 'UNKNOWN'}</span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80 text-center">
+              <div class="bg-slate-900/60 p-2 rounded-lg">
+                <p class="text-[10px] text-slate-500 uppercase">SLA Uptime</p>
+                <p class="text-xs font-bold text-emerald-400">${ep.uptime_percentage}%</p>
+              </div>
+              <div class="bg-slate-900/60 p-2 rounded-lg">
+                <p class="text-[10px] text-slate-500 uppercase">Avg</p>
+                <p class="text-xs font-bold text-slate-200">${ep.avg_response_ms}ms</p>
+              </div>
+              <div class="bg-slate-900/60 p-2 rounded-lg">
+                <p class="text-[10px] text-slate-500 uppercase">p95</p>
+                <p class="text-xs font-bold text-indigo-400">${ep.p95 || 0}ms</p>
+              </div>
+              <div class="bg-slate-900/60 p-2 rounded-lg">
+                <p class="text-[10px] text-slate-500 uppercase">Checks</p>
+                <p class="text-xs font-bold text-slate-200">${ep.total_checks}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderInsights(insights) {
+      const container = document.getElementById('insightsContainer');
+      if (!insights || insights.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 italic">No warnings detected. All monitored APIs are operating within nominal thresholds.</p>`;
+        return;
+      }
+
+      container.innerHTML = insights.map(ins => {
+        let badgeColor = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+        if (ins.severity === 'CRITICAL') badgeColor = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+        if (ins.severity === 'WARNING') badgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+        if (ins.severity === 'HEALTHY') badgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+
+        return `
+          <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl space-y-1.5">
+            <div class="flex items-center justify-between">
+              <h5 class="font-bold text-xs text-slate-200 flex items-center">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold border mr-2 ${badgeColor}">${ins.severity}</span>
+                ${escapeHtml(ins.title)}
+              </h5>
+              <span class="text-[10px] text-slate-500 uppercase font-mono">${ins.category}</span>
+            </div>
+            <p class="text-xs text-slate-400">${escapeHtml(ins.description)}</p>
+            <p class="text-xs text-emerald-400/90 font-medium pt-1"><span class="text-slate-500">Recommendation:</span> ${escapeHtml(ins.recommendation)}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAuditLog(checks) {
+      const tbody = document.getElementById('auditTableBody');
+      tbody.innerHTML = checks.slice(0, 10).map(c => {
+        const isSuccess = c.is_success;
+        return `
+          <tr class="hover:bg-slate-900/50 transition">
+            <td class="py-2.5 px-3">
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${isSuccess ? 'text-emerald-400 bg-emerald-500/10' : 'text-rose-400 bg-rose-500/10'}">
+                ${isSuccess ? 'OK' : 'FAIL'}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 font-mono">${c.status_code || '-'}</td>
+            <td class="py-2.5 px-3 font-semibold text-slate-200">${c.response_time_ms} ms</td>
+            <td class="py-2.5 px-3 text-slate-400">${c.ttfb_ms ? c.ttfb_ms + ' ms' : '-'}</td>
+            <td class="py-2.5 px-3 font-medium text-slate-300 truncate max-w-xs">${escapeHtml(c.endpoint_name || c.endpoint_url || '')}</td>
+            <td class="py-2.5 px-3 text-slate-500 font-mono text-[11px]">${c.checked_at ? new Date(c.checked_at).toLocaleTimeString() : '-'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function reloadMetrics() {
+      loadData();
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+    }
+
+    function getFallbackData() {
+      return {
+        summary: {
+          total_endpoints: 4,
+          overall_uptime_pct: 99.8,
+          overall_avg_latency_ms: 185.4,
+          total_checks_recorded: 48
+        },
+        endpoints: [
+          { name: "JSONPlaceholder Posts API", url: "https://jsonplaceholder.typicode.com/posts/1", latest_status: "UP", uptime_percentage: 100.0, avg_response_ms: 120.5, p95: 185.0, total_checks: 12 },
+          { name: "JSONPlaceholder Users API", url: "https://jsonplaceholder.typicode.com/users", latest_status: "UP", uptime_percentage: 100.0, avg_response_ms: 145.2, p95: 210.4, total_checks: 12 },
+          { name: "HTTPBin Status 200 Check", url: "https://httpbin.org/status/200", latest_status: "UP", uptime_percentage: 99.5, avg_response_ms: 220.1, p95: 310.0, total_checks: 12 },
+          { name: "HTTPBin Delay Simulation", url: "https://httpbin.org/delay/1", latest_status: "UP", uptime_percentage: 99.0, avg_response_ms: 1045.0, p95: 1280.0, total_checks: 12 }
+        ],
+        insights: [
+          {
+            severity: "WARNING",
+            category: "LATENCY",
+            title: "Elevated p95 Latency on 'HTTPBin Delay Simulation'",
+            description: "95% of requests take up to 1280.0ms, surpassing nominal threshold of 500ms.",
+            recommendation: "Inspect server delay, downstream database locks, and evaluate caching layers."
+          },
+          {
+            severity: "HEALTHY",
+            category: "PERFORMANCE",
+            title: "Optimal Performance on 'JSONPlaceholder Posts API'",
+            description: "Stable 100.0% uptime with swift 185.0ms p95 latency.",
+            recommendation: "Current performance adheres strictly to production SLA standards."
+          }
+        ],
+        recent_checks: []
+      };
+    }
+
+    window.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>
