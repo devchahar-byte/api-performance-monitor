@@ -1,28 +1,16 @@
-name: API Performance Monitor & Live Pages Sync
+name: API Performance Monitor & Periodic Updater
 
 on:
   schedule:
     # Run periodically every 30 minutes
     - cron: '*/30 * * * *'
   workflow_dispatch: # Allows manual trigger anytime
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/**'
-      - '.github/workflows/**'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
-  probe-and-deploy:
+  probe-and-sync:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -49,7 +37,7 @@ jobs:
         run: |
           python cli.py export
 
-      - name: Commit & Push Updated Performance Datasets
+      - name: Commit & Push Updated Datasets
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -60,15 +48,3 @@ jobs:
             git commit -m "chore(metrics): automated api probe sync [skip ci]"
             git push
           fi
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './docs'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
