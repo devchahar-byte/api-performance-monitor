@@ -1,5 +1,5 @@
 id,endpoint_id,endpoint_name,status_code,response_time_ms,ttfb_ms,is_success,error_type,checked_at
-4,4,HTTPBin Delay Simulation (Slow),200,1208.82,1208.67,True,,2026-11-08T08:43:15.490494
-3,3,HTTPBin Status 200 Check,200,207.4,207.28,True,,2026-11-08T08:43:14.277964
-2,2,JSONPlaceholder Users API,200,24.67,24.45,True,,2026-11-08T08:43:14.067009
-1,1,JSONPlaceholder Posts API,200,38.1,37.91,True,,2026-11-08T08:43:14.036432
+4,4,HTTPBin Delay Simulation (Slow),200,1093.58,1093.45,True,,2026-11-08T15:42:11.318704
+3,3,HTTPBin Status 200 Check,200,178.07,177.95,True,,2026-11-08T15:42:10.221728
+2,2,JSONPlaceholder Users API,200,44.94,44.75,True,,2026-11-08T15:42:10.040069
+1,1,JSONPlaceholder Posts API,200,97.52,97.35,True,,2026-11-08T15:42:09.989756
