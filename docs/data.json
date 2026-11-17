@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-17T12:13:29.590793+00:00",
+  "generated_at": "2026-11-17T21:10:32.932685+00:00",
   "summary": {
     "total_endpoints": 4,
     "overall_uptime_pct": 100.0,
-    "overall_avg_latency_ms": 359.38,
+    "overall_avg_latency_ms": 377.56,
     "total_checks_recorded": 4
   },
   "endpoints": [
@@ -15,20 +15,20 @@
       "successful_checks": 1,
       "failed_checks": 0,
       "uptime_percentage": 100.0,
-      "avg_response_ms": 121.0,
-      "min_response_ms": 121.0,
-      "max_response_ms": 121.0,
-      "p50": 121.0,
-      "p90": 121.0,
-      "p95": 121.0,
-      "p99": 121.0,
+      "avg_response_ms": 164.01,
+      "min_response_ms": 164.01,
+      "max_response_ms": 164.01,
+      "p50": 164.01,
+      "p90": 164.01,
+      "p95": 164.01,
+      "p99": 164.01,
       "status_codes": {
         "200": 1
       },
       "latest_status": "UP",
       "latest_status_code": 200,
-      "latest_response_ms": 121.0,
-      "last_checked": "2026-11-17T12:13:27.649642"
+      "latest_response_ms": 164.01,
+      "last_checked": "2026-11-17T21:10:30.880094"
     },
     {
       "endpoint_id": 2,
@@ -38,20 +38,20 @@
       "successful_checks": 1,
       "failed_checks": 0,
       "uptime_percentage": 100.0,
-      "avg_response_ms": 59.35,
-      "min_response_ms": 59.35,
-      "max_response_ms": 59.35,
-      "p50": 59.35,
-      "p90": 59.35,
-      "p95": 59.35,
-      "p99": 59.35,
+      "avg_response_ms": 78.97,
+      "min_response_ms": 78.97,
+      "max_response_ms": 78.97,
+      "p50": 78.97,
+      "p90": 78.97,
+      "p95": 78.97,
+      "p99": 78.97,
       "status_codes": {
         "200": 1
       },
       "latest_status": "UP",
       "latest_status_code": 200,
-      "latest_response_ms": 59.35,
-      "last_checked": "2026-11-17T12:13:27.716428"
+      "latest_response_ms": 78.97,
+      "last_checked": "2026-11-17T21:10:30.965259"
     },
     {
       "endpoint_id": 3,
@@ -61,20 +61,20 @@
       "successful_checks": 1,
       "failed_checks": 0,
       "uptime_percentage": 100.0,
-      "avg_response_ms": 154.47,
-      "min_response_ms": 154.47,
-      "max_response_ms": 154.47,
-      "p50": 154.47,
-      "p90": 154.47,
-      "p95": 154.47,
-      "p99": 154.47,
+      "avg_response_ms": 152.58,
+      "min_response_ms": 152.58,
+      "max_response_ms": 152.58,
+      "p50": 152.58,
+      "p90": 152.58,
+      "p95": 152.58,
+      "p99": 152.58,
       "status_codes": {
         "200": 1
       },
       "latest_status": "UP",
       "latest_status_code": 200,
-      "latest_response_ms": 154.47,
-      "last_checked": "2026-11-17T12:13:27.872938"
+      "latest_response_ms": 152.58,
+      "last_checked": "2026-11-17T21:10:31.121401"
     },
     {
       "endpoint_id": 4,
@@ -84,20 +84,20 @@
       "successful_checks": 1,
       "failed_checks": 0,
       "uptime_percentage": 100.0,
-      "avg_response_ms": 1102.7,
-      "min_response_ms": 1102.7,
-      "max_response_ms": 1102.7,
-      "p50": 1102.7,
-      "p90": 1102.7,
-      "p95": 1102.7,
-      "p99": 1102.7,
+      "avg_response_ms": 1114.68,
+      "min_response_ms": 1114.68,
+      "max_response_ms": 1114.68,
+      "p50": 1114.68,
+      "p90": 1114.68,
+      "p95": 1114.68,
+      "p99": 1114.68,
       "status_codes": {
         "200": 1
       },
       "latest_status": "UP",
       "latest_status_code": 200,
-      "latest_response_ms": 1102.7,
-      "last_checked": "2026-11-17T12:13:28.977784"
+      "latest_response_ms": 1114.68,
+      "last_checked": "2026-11-17T21:10:32.239505"
     }
   ],
   "recent_checks": [
@@ -107,14 +107,14 @@
       "endpoint_name": "HTTPBin Delay Simulation (Slow)",
       "endpoint_url": "https://httpbin.org/delay/1",
       "status_code": 200,
-      "response_time_ms": 1102.7,
+      "response_time_ms": 1114.68,
       "dns_time_ms": null,
-      "ttfb_ms": 1102.58,
+      "ttfb_ms": 1114.54,
       "is_success": true,
       "error_type": null,
       "error_message": null,
-      "content_length": 318,
-      "checked_at": "2026-11-17T12:13:28.977784"
+      "content_length": 317,
+      "checked_at": "2026-11-17T21:10:32.239505"
     },
     {
       "id": 3,
@@ -122,14 +122,14 @@
       "endpoint_name": "HTTPBin Status 200 Check",
       "endpoint_url": "https://httpbin.org/status/200",
       "status_code": 200,
-      "response_time_ms": 154.47,
+      "response_time_ms": 152.58,
       "dns_time_ms": null,
-      "ttfb_ms": 154.4,
+      "ttfb_ms": 152.46,
       "is_success": true,
       "error_type": null,
       "error_message": null,
       "content_length": 0,
-      "checked_at": "2026-11-17T12:13:27.872938"
+      "checked_at": "2026-11-17T21:10:31.121401"
     },
     {
       "id": 2,
@@ -137,14 +137,14 @@
       "endpoint_name": "JSONPlaceholder Users API",
       "endpoint_url": "https://jsonplaceholder.typicode.com/users",
       "status_code": 200,
-      "response_time_ms": 59.35,
+      "response_time_ms": 78.97,
       "dns_time_ms": null,
-      "ttfb_ms": 59.22,
+      "ttfb_ms": 78.75,
       "is_success": true,
       "error_type": null,
       "error_message": null,
       "content_length": 5645,
-      "checked_at": "2026-11-17T12:13:27.716428"
+      "checked_at": "2026-11-17T21:10:30.965259"
     },
     {
       "id": 1,
@@ -152,14 +152,14 @@
       "endpoint_name": "JSONPlaceholder Posts API",
       "endpoint_url": "https://jsonplaceholder.typicode.com/posts/1",
       "status_code": 200,
-      "response_time_ms": 121.0,
+      "response_time_ms": 164.01,
       "dns_time_ms": null,
-      "ttfb_ms": 120.88,
+      "ttfb_ms": 163.81,
       "is_success": true,
       "error_type": null,
       "error_message": null,
       "content_length": 292,
-      "checked_at": "2026-11-17T12:13:27.649642"
+      "checked_at": "2026-11-17T21:10:30.880094"
     }
   ],
   "insights": [
@@ -167,7 +167,7 @@
       "severity": "HEALTHY",
       "category": "PERFORMANCE",
       "title": "Optimal Performance on 'JSONPlaceholder Posts API'",
-      "description": "Stable 100.0% uptime with swift 121.0ms p95 latency.",
+      "description": "Stable 100.0% uptime with swift 164.01ms p95 latency.",
       "recommendation": "Current performance adheres strictly to production SLA standards.",
       "endpoint_url": "https://jsonplaceholder.typicode.com/posts/1"
     },
@@ -175,7 +175,7 @@
       "severity": "HEALTHY",
       "category": "PERFORMANCE",
       "title": "Optimal Performance on 'JSONPlaceholder Users API'",
-      "description": "Stable 100.0% uptime with swift 59.35ms p95 latency.",
+      "description": "Stable 100.0% uptime with swift 78.97ms p95 latency.",
       "recommendation": "Current performance adheres strictly to production SLA standards.",
       "endpoint_url": "https://jsonplaceholder.typicode.com/users"
     },
@@ -183,7 +183,7 @@
       "severity": "HEALTHY",
       "category": "PERFORMANCE",
       "title": "Optimal Performance on 'HTTPBin Status 200 Check'",
-      "description": "Stable 100.0% uptime with swift 154.47ms p95 latency.",
+      "description": "Stable 100.0% uptime with swift 152.58ms p95 latency.",
       "recommendation": "Current performance adheres strictly to production SLA standards.",
       "endpoint_url": "https://httpbin.org/status/200"
     },
@@ -191,7 +191,7 @@
       "severity": "WARNING",
       "category": "LATENCY",
       "title": "Elevated p95 Latency on 'HTTPBin Delay Simulation (Slow)'",
-      "description": "p95 latency is 1102.7ms (avg 1102.7ms). Users on slow connections may experience noticeable delay.",
+      "description": "p95 latency is 1114.68ms (avg 1114.68ms). Users on slow connections may experience noticeable delay.",
       "recommendation": "Enable gzip/brotli compression and evaluate payload response payloads.",
       "endpoint_url": "https://httpbin.org/delay/1"
     }
